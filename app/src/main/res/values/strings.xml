@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">BusLog2</string>
+    <string name="login_title">Login BusLog</string>
+    <string name="email_label">Email</string>
+    <string name="password_label">Password</string>
+    <string name="login_button">Login</string>
+    <string name="profile_title">Profil Pengguna</string>
+    <string name="logout_button">Logout</string>
+    <string name="empty_log_msg">Belum ada log bus. Tekan tombol + untuk menambah.</string>
+    <string name="delete_dialog_title">Hapus Log?</string>
+    <string name="delete_dialog_msg">Apakah kamu yakin ingin menghapus data bus %1$s ini?</string>
+    <string name="btn_delete">Hapus</string>
+    <string name="btn_cancel">Batal</string>
+
+    <string name="cd_profile">Profil</string>
+    <string name="cd_add_log">Tambah Log</string>
+    <string name="cd_bus_photo">Foto Bus</string>
+    <string name="cd_edit">Edit</string>
+    <string name="cd_delete">Hapus</string>
+    <string name="cd_back">Kembali</string>
 </resources>

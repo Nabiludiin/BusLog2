@@ -13,8 +13,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.d3if4802.buslog2.R
 import com.d3if4802.buslog2.network.ApiState
 import com.d3if4802.buslog2.model.BusLog
 import com.d3if4802.buslog2.viewmodel.BusLogViewModel
@@ -37,17 +39,17 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("BusLog") },
+                title = { Text(stringResource(R.string.app_name)) },
                 actions = {
                     IconButton(onClick = onProfileClick) {
-                        Icon(Icons.Default.Person, contentDescription = "Profil")
+                        Icon(Icons.Default.Person, contentDescription = stringResource(R.string.cd_profile))
                     }
                 }
             )
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onAddLogClick) {
-                Icon(Icons.Default.Add, contentDescription = "Tambah Log")
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.cd_add_log))
             }
         }
     ) { paddingValues ->
@@ -68,7 +70,7 @@ fun HomeScreen(
                 is ApiState.Success -> {
                     val logs = (logState as ApiState.Success).data
                     if (logs.isEmpty()) {
-                        Text("Belum ada log bus. Tekan tombol + untuk menambah.")
+                        Text(stringResource(R.string.empty_log_msg))
                     } else {
                         LazyColumn(modifier = Modifier.fillMaxSize()) {
                             items(logs) { log ->
@@ -97,16 +99,16 @@ fun LogCardItem(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Hapus Log?") },
-            text = { Text("Apakah kamu yakin ingin menghapus data bus ${log.platNomor} ini?") },
+            title = { Text(stringResource(R.string.delete_dialog_title)) },
+            text = { Text(stringResource(R.string.delete_dialog_msg, log.platNomor)) },
             confirmButton = {
                 TextButton(onClick = {
                     onDelete()
                     showDeleteDialog = false
-                }) { Text("Hapus") }
+                }) { Text(stringResource(R.string.btn_delete)) }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) { Text("Batal") }
+                TextButton(onClick = { showDeleteDialog = false }) { Text(stringResource(R.string.btn_cancel)) }
             }
         )
     }
@@ -121,7 +123,7 @@ fun LogCardItem(
             if (!log.imageUrl.isNullOrEmpty()) {
                 AsyncImage(
                     model = log.imageUrl,
-                    contentDescription = "Foto Bus",
+                    contentDescription = stringResource(R.string.cd_bus_photo),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -137,10 +139,10 @@ fun LogCardItem(
                 horizontalArrangement = Arrangement.End
             ) {
                 IconButton(onClick = onEdit) {
-                    Icon(Icons.Default.Edit, contentDescription = "Edit")
+                    Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.cd_edit))
                 }
                 IconButton(onClick = { showDeleteDialog = true }) {
-                    Icon(Icons.Default.Delete, contentDescription = "Hapus", tint = MaterialTheme.colorScheme.error)
+                    Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.cd_delete), tint = MaterialTheme.colorScheme.error)
                 }
             }
         }
