@@ -10,7 +10,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 object ApiConfig {
     private const val BASE_URL = "https://mzwjpoquwnbjjhiyvhad.supabase.co/"
-
     private const val API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16d2pwb3F1d25iampoaXl2aGFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxOTIxNDIsImV4cCI6MjA5Nzc2ODE0Mn0.AFDCk34ZvnfxKTK25oLDN06y0GJazD6tjmwS359XX3k"
 
     fun getApiService(): ApiService {

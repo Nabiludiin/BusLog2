@@ -117,7 +117,7 @@ class MainActivity : ComponentActivity() {
                                             existingImageUrl = logToEdit!!.imageUrl
                                         )
                                     } else {
-                                        viewModel.addLogWithImage(
+                                        viewModel.addLog(
                                             platNomor = platNomor,
                                             catatan = catatan,
                                             userEmail = userEmail,

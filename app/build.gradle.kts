@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.d3if4802.buslog2"
-    compileSdk = 37
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.d3if4802.buslog2"
@@ -20,7 +20,7 @@ android {
 
         val properties = Properties()
         properties.load(project.rootProject.file("local.properties").inputStream())
-        buildConfigField("String", "API_KEY", properties.getProperty("API_KEY") ?: "\"\"")
+        buildConfigField("String", "API_KEY", properties.getProperty("API_KEY").toString())
     }
 
     buildTypes {

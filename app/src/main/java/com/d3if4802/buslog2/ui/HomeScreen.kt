@@ -3,6 +3,8 @@ package com.d3if4802.buslog2.ui
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -14,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.d3if4802.buslog2.R
@@ -32,7 +35,7 @@ fun HomeScreen(
 ) {
     val logState by viewModel.logState.collectAsState()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(userEmail) {
         viewModel.getLogs(userEmail)
     }
 
@@ -65,7 +68,24 @@ fun HomeScreen(
                 }
                 is ApiState.Error -> {
                     val errorMessage = (logState as ApiState.Error).message
-                    Text(text = errorMessage, color = MaterialTheme.colorScheme.error)
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = errorMessage,
+                            color = MaterialTheme.colorScheme.error,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(onClick = { viewModel.getLogs(userEmail) }) {
+                            Text("Coba Lagi")
+                        }
+                    }
                 }
                 is ApiState.Success -> {
                     val logs = (logState as ApiState.Success).data

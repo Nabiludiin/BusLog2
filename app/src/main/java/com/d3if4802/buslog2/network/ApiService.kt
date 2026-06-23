@@ -1,37 +1,36 @@
 package com.d3if4802.buslog2.network
 
 import com.d3if4802.buslog2.model.BusLog
+import com.d3if4802.buslog2.model.BusLogRequest
 import okhttp3.RequestBody
-import retrofit2.http.Body
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.PATCH
-import retrofit2.http.POST
-import retrofit2.http.Query
-import retrofit2.http.Url
+import retrofit2.Response
+import retrofit2.http.*
 
 interface ApiService {
     @GET("rest/v1/bus_logs")
     suspend fun getBusLogs(
-        @Query("userEmail") userEmail: String,
-        @Query("select") select: String = "*"
+        @Query("user_email") userEmail: String,
+        @Query("select") select: String = "*",
+        @Query("order") order: String = "created_at.desc"
     ): List<BusLog>
 
+    @Headers("Prefer: return=minimal")
     @POST("rest/v1/bus_logs")
     suspend fun addBusLog(
-        @Body busLog: BusLog
+        @Body busLogRequest: BusLogRequest
     )
 
+    @Headers("Prefer: return=minimal")
     @PATCH("rest/v1/bus_logs")
     suspend fun updateBusLog(
         @Query("id") id: String,
-        @Body busLog: BusLog
+        @Body busLogRequest: BusLogRequest
     )
 
     @DELETE("rest/v1/bus_logs")
     suspend fun deleteBusLog(
         @Query("id") id: String
-    )
+    ): Response<Unit>
 
     @POST
     suspend fun uploadImage(
