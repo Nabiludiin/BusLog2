@@ -77,7 +77,7 @@ fun HomeScreen(
                                 LogCardItem(
                                     log = log,
                                     onEdit = { onEditLogClick(log) },
-                                    onDelete = { viewModel.deleteLog(log.id, userEmail) }
+                                    onDelete = { viewModel.deleteLog(log.id.toString(), userEmail) }
                                 )
                             }
                         }

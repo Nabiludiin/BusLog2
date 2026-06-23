@@ -18,4 +18,11 @@
     <string name="cd_edit">Edit</string>
     <string name="cd_delete">Hapus</string>
     <string name="cd_back">Kembali</string>
+
+    <string name="form_title_add">Tambah Log</string>
+    <string name="form_title_edit">Edit Log</string>
+    <string name="plat_nomor_label">Plat Nomor</string>
+    <string name="catatan_label">Catatan</string>
+    <string name="btn_save">Simpan</string>
+    <string name="cd_pick_image">Ketuk area ini untuk Pilih Gambar</string>
 </resources>

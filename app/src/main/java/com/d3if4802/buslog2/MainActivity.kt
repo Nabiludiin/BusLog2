@@ -15,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.d3if4802.buslog2.datastore.UserPreferences
+import com.d3if4802.buslog2.ui.FormLogScreen
 import com.d3if4802.buslog2.ui.HomeScreen
 import com.d3if4802.buslog2.ui.LoginScreen
 import com.d3if4802.buslog2.ui.ProfileScreen
@@ -35,7 +36,9 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val isLoggedIn by userPreferences.isLoggedIn.collectAsState(initial = false)
+                    val userName by userPreferences.userName.collectAsState(initial = "")
                     val userEmail by userPreferences.userEmail.collectAsState(initial = "")
+                    val userPhoto by userPreferences.userPhoto.collectAsState(initial = "")
 
                     val viewModel: BusLogViewModel = viewModel()
                     val navController = rememberNavController()
@@ -65,17 +68,21 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate("profile")
                                 },
                                 onAddLogClick = {
-                                    // TODO: Navigasi ke Form Tambah (Langkah Berikutnya)
+                                    viewModel.setLogToEdit(null)
+                                    navController.navigate("form")
                                 },
                                 onEditLogClick = { log ->
-                                    // TODO: Navigasi ke Form Edit (Langkah Berikutnya)
+                                    viewModel.setLogToEdit(log)
+                                    navController.navigate("form")
                                 }
                             )
                         }
 
                         composable("profile") {
                             ProfileScreen(
+                                userName = userName,
                                 userEmail = userEmail,
+                                userPhoto = userPhoto,
                                 onBackClick = {
                                     navController.popBackStack()
                                 },
@@ -90,6 +97,38 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
+                        composable("form") {
+                            val logToEdit by viewModel.logToEdit.collectAsState()
+
+                            FormLogScreen(
+                                logToEdit = logToEdit,
+                                onBackClick = {
+                                    viewModel.setLogToEdit(null)
+                                    navController.popBackStack()
+                                },
+                                onSaveClick = { platNomor, catatan, imageBytes ->
+                                    if (logToEdit != null) {
+                                        viewModel.updateLog(
+                                            id = logToEdit!!.id.toString(),
+                                            platNomor = platNomor,
+                                            catatan = catatan,
+                                            userEmail = userEmail,
+                                            imageBytes = imageBytes,
+                                            existingImageUrl = logToEdit!!.imageUrl
+                                        )
+                                    } else {
+                                        viewModel.addLogWithImage(
+                                            platNomor = platNomor,
+                                            catatan = catatan,
+                                            userEmail = userEmail,
+                                            imageBytes = imageBytes
+                                        )
+                                    }
+                                    viewModel.setLogToEdit(null)
+                                    navController.popBackStack()
+                                }
+                            )
+                        }
                     }
                 }
             }

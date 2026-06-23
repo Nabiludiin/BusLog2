@@ -3,7 +3,7 @@ package com.d3if4802.buslog2.ui
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,20 +18,19 @@ import com.d3if4802.buslog2.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
+    userName: String,
     userEmail: String,
+    userPhoto: String,
     onBackClick: () -> Unit,
     onLogoutClick: () -> Unit
 ) {
-    val userName = userEmail.substringBefore("@").replaceFirstChar { it.uppercase() }
-    val profilePhotoUrl = "https://ui-avatars.com/api/?name=$userName&background=random&size=200"
-
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.profile_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.cd_back))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.cd_back))
                     }
                 }
             )
@@ -47,7 +46,7 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             AsyncImage(
-                model = profilePhotoUrl,
+                model = userPhoto.ifEmpty { "https://ui-avatars.com/api/?name=$userName&background=random&size=200" },
                 contentDescription = stringResource(R.string.cd_profile),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
