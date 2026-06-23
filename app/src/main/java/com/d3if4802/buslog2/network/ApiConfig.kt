@@ -1,5 +1,6 @@
-package com.d3if4802.buslog2
+package com.d3if4802.buslog2.network
 
+import com.d3if4802.buslog2.network.ApiService
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.Interceptor

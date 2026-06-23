@@ -1,7 +1,10 @@
-package com.d3if4802.buslog2
+package com.d3if4802.buslog2.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.d3if4802.buslog2.model.BusLog
+import com.d3if4802.buslog2.network.ApiConfig
+import com.d3if4802.buslog2.network.ApiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

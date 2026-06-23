@@ -1,5 +1,6 @@
-package com.d3if4802.buslog2
+package com.d3if4802.buslog2.network
 
+import com.d3if4802.buslog2.model.BusLog
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET

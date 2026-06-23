@@ -1,4 +1,4 @@
-package com.d3if4802.buslog2
+package com.d3if4802.buslog2.model
 
 import com.squareup.moshi.Json
 

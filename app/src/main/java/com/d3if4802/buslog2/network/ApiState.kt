@@ -1,4 +1,6 @@
-package com.d3if4802.buslog2
+package com.d3if4802.buslog2.network
+
+import com.d3if4802.buslog2.model.BusLog
 
 sealed class ApiState {
     object Idle : ApiState()
