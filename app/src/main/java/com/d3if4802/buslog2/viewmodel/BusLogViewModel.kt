@@ -1,6 +1,5 @@
 package com.d3if4802.buslog2.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d3if4802.buslog2.model.BusLog
@@ -12,7 +11,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.HttpException
 
 class BusLogViewModel : ViewModel() {
     private val _logState = MutableStateFlow<ApiState>(ApiState.Idle)
@@ -32,13 +30,8 @@ class BusLogViewModel : ViewModel() {
                 val cleanEmail = userEmail.trim().lowercase()
                 val logs = ApiConfig.getApiService().getBusLogs("eq.$cleanEmail")
                 _logState.value = ApiState.Success(logs)
-            } catch (e: HttpException) {
-                val errorBody = e.response()?.errorBody()?.string()
-                Log.e("SUPABASE_ERROR", "GET Error: $errorBody")
-                _logState.value = ApiState.Error("DB Error: $errorBody")
             } catch (e: Exception) {
-                Log.e("SUPABASE_ERROR", "GET Exception: ${e.message}", e)
-                _logState.value = ApiState.Error(e.message ?: "Terjadi kesalahan")
+                handleError(e)
             }
         }
     }
@@ -68,13 +61,8 @@ class BusLogViewModel : ViewModel() {
 
                 ApiConfig.getApiService().addBusLog(newLog)
                 getLogs(cleanEmail)
-            } catch (e: HttpException) {
-                val errorBody = e.response()?.errorBody()?.string() ?: "Unknown HTTP Error"
-                Log.e("SUPABASE_ERROR", "ADD Error: $errorBody")
-                _logState.value = ApiState.Error("HTTP Error - Detail: $errorBody")
             } catch (e: Exception) {
-                Log.e("SUPABASE_ERROR", "ADD Exception: ${e.message}", e)
-                _logState.value = ApiState.Error(e.message ?: "Error saat menyimpan")
+                handleError(e)
             }
         }
     }
@@ -84,13 +72,14 @@ class BusLogViewModel : ViewModel() {
             _logState.value = ApiState.Loading
             try {
                 val cleanEmail = userEmail.trim().lowercase()
-                ApiConfig.getApiService().deleteBusLog("eq.$id")
-                getLogs(userEmail)
-            } catch (e: HttpException) {
-                val errorBody = e.response()?.errorBody()?.string()
-                _logState.value = ApiState.Error("Hapus Gagal: $errorBody")
+                val response = ApiConfig.getApiService().deleteBusLog("eq.$id")
+                if (response.isSuccessful || response.code() == 204) {
+                    getLogs(cleanEmail)
+                } else {
+                    _logState.value = ApiState.Error("Gagal menghapus data: ${response.code()}")
+                }
             } catch (e: Exception) {
-                _logState.value = ApiState.Error(e.message ?: "Error saat menghapus")
+                handleError(e)
             }
         }
     }
@@ -99,14 +88,14 @@ class BusLogViewModel : ViewModel() {
         id: String,
         platNomor: String,
         catatan: String,
-        userEmail: String,
+        userEmail: String?,
         imageBytes: ByteArray?,
         existingImageUrl: String?
     ) {
         viewModelScope.launch {
             _logState.value = ApiState.Loading
             try {
-                val cleanEmail = userEmail.trim().lowercase()
+                val cleanEmail = userEmail?.trim()?.lowercase() ?: ""
                 val projectUrl = "https://mzwjpoquwnbjjhiyvhad.supabase.co"
                 var finalImageUrl: String? = existingImageUrl
 
@@ -127,11 +116,25 @@ class BusLogViewModel : ViewModel() {
 
                 ApiConfig.getApiService().updateBusLog("eq.$id", updatedLog)
                 getLogs(cleanEmail)
-            } catch (e: HttpException) {
-                val errorBody = e.response()?.errorBody()?.string()
-                _logState.value = ApiState.Error("Update Gagal: $errorBody")
             } catch (e: Exception) {
-                _logState.value = ApiState.Error(e.message ?: "Error saat update")
+                handleError(e)
+            }
+        }
+    }
+
+    private fun handleError(e: Exception) {
+        when (e) {
+            is java.net.UnknownHostException,
+            is java.net.ConnectException,
+            is java.net.SocketTimeoutException -> {
+                _logState.value = ApiState.Error("Tidak ada koneksi internet. Silakan periksa jaringan Anda.")
+            }
+            is retrofit2.HttpException -> {
+                val errorBody = e.response()?.errorBody()?.string()
+                _logState.value = ApiState.Error("Gagal terhubung ke database: $errorBody")
+            }
+            else -> {
+                _logState.value = ApiState.Error(e.message ?: "Terjadi kesalahan yang tidak diketahui")
             }
         }
     }
